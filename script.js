@@ -29,7 +29,6 @@ function speak(message) {
   }
 }
 
-
 function handleCheckboxChange(event) {
   const checkbox = event.target;
   const task = checkbox.nextElementSibling.textContent;
@@ -44,7 +43,6 @@ function handleCheckboxChange(event) {
     speak(message);
   }
 }
-
 
 const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 checkboxes.forEach((checkbox) => {
