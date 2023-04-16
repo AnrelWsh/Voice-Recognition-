@@ -2,8 +2,8 @@ const taskList = document.getElementById('task-list');
 
 function createTask(taskText) {
   const listItem = document.createElement('li');
-  const checkbox = document.createElement('input');
 
+  const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
   checkbox.id = `task${taskList.children.length + 1}`;
 
@@ -19,8 +19,6 @@ function createTask(taskText) {
   const message = `La tâche "${taskText}" a été ajoutée à la liste.`;
   speak(message);
 }
-
-
 
 function speak(message) {
   if ('speechSynthesis' in window) {
@@ -56,13 +54,27 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
   recognition.lang = 'fr-FR';
   
   recognition.addEventListener('result', (event) => {
-    const transcript = event.results[event.results.length - 1][0].transcript;
-
-    console.log(`Nouvelle tâche : "${transcript}"`);
-    createTask(transcript); 
+    const transcript = event.results[event.results.length - 1][0].transcript.trim();
     
-
-});
+    if (transcript.startsWith('check')) {
+      const taskName = transcript.slice(6).trim();
+      const tasks = document.querySelectorAll('#task-list li label');
+      for (const task of tasks) {
+        if (task.textContent === taskName) {
+          const checkbox = task.previousElementSibling;
+          checkbox.checked = !checkbox.checked;
+          checkbox.dispatchEvent(new Event('change'));
+          const message = `La tâche "${taskName}" a été ${checkbox.checked ? 'cochée' : 'décochée'}.`;
+          speak(message);
+          break;
+        }
+      }
+    } else {
+      console.log(`Nouvelle tâche : "${transcript}"`);
+      createTask(transcript); 
+    }
+  });
+  
   
   recognition.addEventListener('end', () => {
     setTimeout(() => {
