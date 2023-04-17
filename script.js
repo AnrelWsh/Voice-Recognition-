@@ -83,6 +83,12 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         }
       }
     }
+    else if (transcript.startsWith('enlève')) {
+      const taskName = transcript.slice(6).trim();
+      const message = `La tâche "${taskName}" a été enlever`;
+      speak(message);
+      removeTask(taskName)
+    }
     else {
       console.log(`Nouvelle tâche : "${transcript}"`);
       createTask(transcript); 
