@@ -56,7 +56,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
   recognition.addEventListener('result', (event) => {
     const transcript = event.results[event.results.length - 1][0].transcript.trim();
     
-    if (transcript.startsWith('check')) {
+    if (transcript.startsWith('valide')) {
       const taskName = transcript.slice(6).trim();
       const tasks = document.querySelectorAll('#task-list li label');
       for (const task of tasks) {
