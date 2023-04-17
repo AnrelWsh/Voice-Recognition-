@@ -42,6 +42,19 @@ function handleCheckboxChange(event) {
   }
 }
 
+function removeTask(taskName) {
+  const tasks = document.querySelectorAll('#task-list li label');
+  for (const task of tasks) {
+    if (task.textContent === taskName) {
+      const listItem = task.parentNode;
+      const message = `La tâche "${taskName}" a été retirée de la liste.`;
+      speak(message);
+      taskList.removeChild(listItem);
+      break;
+    }
+  }
+}
+
 const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 checkboxes.forEach((checkbox) => {
   checkbox.addEventListener('change', handleCheckboxChange);
@@ -69,7 +82,14 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
           break;
         }
       }
-    } else {
+    }
+    else if (transcript.startsWith('enlève')) {
+      const taskName = transcript.slice(6).trim();
+      const message = `La tâche "${taskName}" a été enlever`;
+      speak(message);
+      removeTask(taskName)
+    }
+    else {
       console.log(`Nouvelle tâche : "${transcript}"`);
       createTask(transcript); 
     }
