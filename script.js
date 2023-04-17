@@ -1,5 +1,6 @@
 const taskList = document.getElementById('task-list');
 
+//Fonction pour créer la têche dans le DOM
 function createTask(taskText) {
   const listItem = document.createElement('li');
 
@@ -20,6 +21,7 @@ function createTask(taskText) {
   speak(message);
 }
 
+//FOnction qui permet au robot de parler à voix haute
 function speak(message) {
   if ('speechSynthesis' in window) {
     const utterance = new SpeechSynthesisUtterance(message);
@@ -27,21 +29,7 @@ function speak(message) {
   }
 }
 
-function handleCheckboxChange(event) {
-  const checkbox = event.target;
-  const task = checkbox.nextElementSibling.textContent;
-
-  if (checkbox.checked) {
-    console.log(`La tâche "${task}" a été cochée`);
-    const message = `La tâche "${task}" a été cochée.`;
-    speak(message);
-  } else {
-    console.log(`La tâche "${task}" a été décochée`);
-    const message = `La tâche "${task}" a été décochée.`;
-    speak(message);
-  }
-}
-
+//Fonction qui permet de retirer les tâche de la liste
 function removeTask(taskName) {
   const tasks = document.querySelectorAll('#task-list li label');
   for (const task of tasks) {
@@ -53,11 +41,7 @@ function removeTask(taskName) {
   }
 }
 
-const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-checkboxes.forEach((checkbox) => {
-  checkbox.addEventListener('change', handleCheckboxChange);
-});
-
+//Début de la détection de voix
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = new SpeechRecognition();
@@ -67,6 +51,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
   recognition.addEventListener('result', (event) => {
     const transcript = event.results[event.results.length - 1][0].transcript.trim();
     
+    //dire 'valide' pour cocher et décocher une tâche
     if (transcript.startsWith('valide')) {
       const taskName = transcript.slice(6).trim();
       const tasks = document.querySelectorAll('#task-list li label');
@@ -82,6 +67,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         }
       }
     }
+    //dire enlève pour retirer de la liste
     else if (transcript.startsWith('enlève')) {
       const taskName = transcript.slice(6).trim();
       const message = `La tâche "${taskName}" a été retirée de la liste.`;
@@ -89,19 +75,21 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
       speak(message);
       removeTask(taskName)
     }
+    //ajouter une tâche en parlant
     else {
       console.log(`Nouvelle tâche : "${transcript}"`);
       createTask(transcript); 
     }
   });
   
-  
+  //Timeout après la reconnaissance
   recognition.addEventListener('end', () => {
     setTimeout(() => {
       recognition.start();
     }, 1000);
   });
-
+ 
+  //lancemant de la fonction
   recognition.start();
 } else {
   console.log('La reconnaissance vocale n\'est pas disponible sur ce navigateur.');
