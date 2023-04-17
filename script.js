@@ -47,8 +47,6 @@ function removeTask(taskName) {
   for (const task of tasks) {
     if (task.textContent === taskName) {
       const listItem = task.parentNode;
-      const message = `La tâche "${taskName}" a été retirée de la liste.`;
-      speak(message);
       taskList.removeChild(listItem);
       break;
     }
@@ -78,6 +76,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
           checkbox.checked = !checkbox.checked;
           checkbox.dispatchEvent(new Event('change'));
           const message = `La tâche "${taskName}" a été ${checkbox.checked ? 'cochée' : 'décochée'}.`;
+          console.log(`${message}`);
           speak(message);
           break;
         }
@@ -85,7 +84,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     }
     else if (transcript.startsWith('enlève')) {
       const taskName = transcript.slice(6).trim();
-      const message = `La tâche "${taskName}" a été enlever`;
+      const message = `La tâche "${taskName}" a été retirée de la liste.`;
+      console.log(`${message}`);
       speak(message);
       removeTask(taskName)
     }
